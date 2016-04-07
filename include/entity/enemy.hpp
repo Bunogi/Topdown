@@ -12,7 +12,7 @@ namespace Enemy {
 
 	class Enemy : public Entity {
 	public:
-		void draw(sf::RenderTexture& texture);
+		void draw(sf::RenderWindow& window);
 		void update(float dt);
 		Enemy(EnemyType setType);
 		const EnemyType type;

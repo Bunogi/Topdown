@@ -18,8 +18,8 @@ Player::Player() {
 	} */
 }
 
-void Player::draw(sf::RenderTexture& texture) {
-	texture.draw(rect);
+void Player::draw(sf::RenderWindow& window) {
+	window.draw(rect);
 }
 
 void Player::update(float dt) {

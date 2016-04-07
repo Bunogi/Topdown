@@ -32,8 +32,8 @@ namespace Enemy {
 		}
 	}
 
-	void Enemy::draw(sf::RenderTexture& texture) {
-		texture.draw(rect);
+	void Enemy::draw(sf::RenderWindow& window) {
+		window.draw(rect);
 	}
 
 	void Enemy::update(float dt) {

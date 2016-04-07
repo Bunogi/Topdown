@@ -1,6 +1,6 @@
 //Base class for entities
 
-#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -9,7 +9,7 @@ public:
 	float x, y;
 	float speed;
 	int health;
-	virtual void draw(sf::RenderTexture& texture) = 0;
+	virtual void draw(sf::RenderWindow& window) = 0;
 	virtual void update(float dt) = 0;
 protected:
 	sf::Texture entTexture;
