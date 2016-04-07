@@ -16,12 +16,12 @@ namespace Game {
 	sf::Vector2u windowSize;
 
 	unsigned cloudCount = 0;
+	const float cloudSpeed = 60.f;
 
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
 		xDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f); //Keep clouds off the edges of the screen
 		yDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f);
-		speedDist = std::uniform_real_distribution<float>(60.f, 120.f);
 		std::string filePath = getResourcePath() + "/images/cloud.png";
 		if (not cloudTexture.loadFromFile(filePath)) {
 			std::cerr << "Error: Failed to open file: " << filePath << "\n";
@@ -36,13 +36,13 @@ namespace Game {
 	void genClouds() {
 		clouds.clear();
 		for (unsigned i = 0; i < cloudCount; i++) {
-			clouds.push_back({xDist(mt), yDist(mt), speedDist(mt)});
+			clouds.push_back({xDist(mt), yDist(mt)});
 		}
 	}
 
 	void drawClouds(sf::RenderWindow& window, float dt) {
 		for (auto &i : clouds) {
-			i.y += i.speed * dt;
+			i.y += cloudSpeed * dt;
 			if (i.y > windowSize.y) {
 				i.y = 0;
 				i.x = xDist(mt);

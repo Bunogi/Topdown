@@ -9,7 +9,7 @@
 
 namespace Game {
 	struct Cloud {
-		float x, y, speed;
+		float x, y;
 	};
 
 	//Initialize RNG, clouds, load cloud texture
