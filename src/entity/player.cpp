@@ -16,12 +16,14 @@ Player::Player() {
 		Config config;
 		config.readFile(settingsFile.c_str());
 		const Setting& setting = config.getRoot()["entity"];
+		x = y = 0;
 		int xSize, ySize;
 		xSize = setting["size"]["w"];
 		ySize = setting["size"]["h"];
 		rect.setSize(sf::Vector2f(xSize, ySize));
 		health = setting["health"];
 		speed = setting["movespeed"];
+		rect.setFillColor(sf::Color::Green);
 	} CATCH_SETTING_ERRORS;
 
 	/*if (entTexture.loadFromFile(getResourcePath() + "/player.png")) {

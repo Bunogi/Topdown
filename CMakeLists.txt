@@ -18,6 +18,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 add_executable(
 	topdown
 	src/main.cpp
+	src/game.cpp
 	src/resource.cpp
 	src/entity/player.cpp
 	src/entity/enemy.cpp
