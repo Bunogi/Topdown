@@ -10,10 +10,6 @@
 #include "configException.hpp"
 
 Player::Player() {
-	x = y = 0;
-	speed = 40.f;
-	rect = sf::RectangleShape(sf::Vector2f(80, 80));
-
 	using namespace libconfig;
 	std::string settingsFile = getResourcePath() + "/entities/player.cfg";
 	try {
