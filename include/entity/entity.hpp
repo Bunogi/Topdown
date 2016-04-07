@@ -1,3 +1,5 @@
+#pragma once
+
 //Base class for entities
 
 #include <SFML/Graphics/RenderWindow.hpp>

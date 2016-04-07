@@ -3,6 +3,7 @@
 
 #include "entity/enemy.hpp"
 #include "resource.hpp"
+#include "configException.hpp"
 
 namespace Enemy {
 	using namespace libconfig;
@@ -23,13 +24,7 @@ namespace Enemy {
 			rect.setSize(sf::Vector2f(xSize, ySize));
 			health = setting["health"];
 			speed = setting["movespeed"];
-		} catch (SettingNotFoundException &ex) {
-			std::cerr << "Error: Failed to find setting : " << ex.getPath() << " in file " << settingsFile << ".\n";
-			throw 1;
-		} catch (ParseException &ex) {
-			std::cerr << "Error: Syntax error : " << ex.getFile() << ": " << ex.getLine() << " : " << ex.getError() << "\n";
-			throw 1;
-		}
+		} CATCH_SETTING_ERRORS;
 	}
 
 	void Enemy::draw(sf::RenderWindow& window) {
