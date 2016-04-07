@@ -1,5 +1,6 @@
-#include <libconfig.h++>
 #include <iostream>
+
+#include <libconfig.h++>
 
 #include "entity/enemy.hpp"
 #include "resource.hpp"

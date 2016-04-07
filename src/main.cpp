@@ -11,9 +11,9 @@ int main() {
 	sf::Event event;
 	sf::Clock deltaClock;
 
-	Player player;
-
 	try {
+		Player player;
+
 		while (window.isOpen()) {
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed)
@@ -28,7 +28,7 @@ int main() {
 			window.display();
 		}
 	} catch(int i) { //A fatal, unrecoverable error has occured
-		std::cerr << "Fatal error, terminating\n";
+		std::cerr << "Fatal error, terminating.\n";
 		return i;
 	}
 }
