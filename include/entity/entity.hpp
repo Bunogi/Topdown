@@ -8,6 +8,7 @@ class Entity {
 public:
 	float x, y;
 	float speed;
+	int health;
 	virtual void draw(sf::RenderTexture& texture) = 0;
 	virtual void update(float dt) = 0;
 protected:

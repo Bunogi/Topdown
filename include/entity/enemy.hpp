@@ -1,4 +1,3 @@
-#include <string>
 #include <map>
 
 #include "entity/entity.hpp"
@@ -9,7 +8,7 @@ namespace Enemy {
 		NoShoot
 	};
 
-	extern const std::map<EnemyType, std::string> enemyNames;
+	extern const std::map<EnemyType, const char *> enemyNames;
 
 	class Enemy : public Entity {
 	public:
