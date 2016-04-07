@@ -6,6 +6,8 @@ pkg_search_module(SFML REQUIRED sfml-graphics)
 pkg_search_module(SFML REQUIRED sfml-system)
 pkg_search_module(SFML REQUIRED sfml-window)
 
+pkg_searcH_module(CONFIG REQUIRED libconfig++)
+
 include_directories(include)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -18,6 +20,7 @@ add_executable(
 	src/main.cpp
 	src/resource.cpp
 	src/entity/player.cpp
+	src/entity/enemy.cpp
 )
 
-target_link_libraries(topdown ${SFML_LIBRARIES})
+target_link_libraries(topdown ${SFML_LIBRARIES} ${CONFIG_LIBRARIES})
