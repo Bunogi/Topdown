@@ -15,10 +15,15 @@ namespace Game {
 	//Initialize RNG, clouds, load cloud texture
 	extern void init(const sf::Vector2u winSize);
 
+	//Update game state on a frame by frame basis
+	extern void update(float dt);
+
 	//Cloud stuff
 	extern void genClouds();
 	extern void drawClouds(sf::RenderWindow& window, float dt);
 	extern unsigned cloudCount;
 
 	extern sf::Vector2u windowSize;
+
+	extern float totalTime;
 };

@@ -18,6 +18,8 @@ namespace Game {
 	unsigned cloudCount = 0;
 	const float cloudSpeed = 60.f;
 
+	float totalTime = 0.f;
+
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
 		xDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f); //Keep clouds off the edges of the screen
@@ -31,6 +33,10 @@ namespace Game {
 			cloudSprite = sf::Sprite(cloudTexture);
 			cloudSprite.setColor(sf::Color(0xFF, 0xFF, 0xFF, 0x88));
 		}
+	}
+
+	void update(float dt) {
+		totalTime += dt;
 	}
 
 	void genClouds() {
