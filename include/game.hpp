@@ -19,4 +19,6 @@ namespace Game {
 	extern void genClouds();
 	extern void drawClouds(sf::RenderWindow& window, float dt);
 	extern unsigned cloudCount;
+
+	extern sf::Vector2u windowSize;
 };
