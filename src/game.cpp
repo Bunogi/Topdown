@@ -65,7 +65,7 @@ namespace Game {
 
 			enemies.clear();
 			/* TODO: Possibly refactor */
-			for (auto it = waves.end() - 1; it != waves.begin(); it--) {
+			for (auto it = waves.end() - 1; it != waves.begin() - 1; it--) {
 				std::vector<Enemy::Enemy> addEnems;
 				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
 				Enemy::EnemyType type;
@@ -81,13 +81,14 @@ namespace Game {
 		} CATCH_SETTING_ERRORS(level);
 	}
 
+
 	void update(float dt, sf::RenderWindow& window) {
 		totalTime += dt;
 		scroll += scrollSpeed * dt;
 
 		//Insert new enemies
 		if (enemyWaveTimes.size() > 0) {
-			if (enemyWaveTimes.top() >= scroll) { //Probably won't ever be equal to scroll. It's just too unlikely
+			if (enemyWaveTimes.top() <= scroll) { //Probably won't ever be equal to scroll. It's just too unlikely
 				enemies.emplace_back(enemiesToAdd.top());
 				enemiesToAdd.pop();
 				enemyWaveTimes.pop();

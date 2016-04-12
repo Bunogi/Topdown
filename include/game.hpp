@@ -28,5 +28,6 @@ namespace Game {
 
 	extern sf::Vector2u windowSize;
 
+	extern float scrollSpeed;
 	extern float totalTime;
 };

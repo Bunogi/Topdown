@@ -43,10 +43,11 @@ namespace Enemy {
 		switch (type) {
 			case EnemyType::Goon:
 				/* Move around to +- half of gridSpace on the x-axis */
-				x = gridPosition * rect.getSize().x + (gridSpace / 2.f) * std::sin(Game::totalTime);
+				x = gridPosition * gridSpace + (gridSpace / 2.f) * std::sin(Game::totalTime);
+				y += Game::scrollSpeed * dt;
 				break;
 			default:  //Probably just haven't implemented this yet
-				std::cerr << "Error: No defined AI for enemy " << enemyNames.at(type) << "\nDid you remember to implement it?\n";
+				std::cerr << "\033[1;31mError\033[0m: No defined AI for enemy " << enemyNames.at(type) << "\nDid you remember to implement it?\n";
 				throw 1;
 		}
 		rect.setPosition(x, y);
