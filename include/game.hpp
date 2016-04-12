@@ -16,7 +16,7 @@ namespace Game {
 	extern void init(const sf::Vector2u winSize);
 
 	//Update game state on a frame by frame basis
-	extern void update(float dt);
+	extern void update(float dt, sf::RenderWindow& window);
 
 	//Cloud stuff
 	extern void genClouds();

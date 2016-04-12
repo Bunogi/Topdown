@@ -31,6 +31,7 @@ int main() {
 
 			window.clear(sf::Color(0x1C, 0x6B, 0xA0));
 			Game::drawClouds(window, deltaTime);
+			Game::update(deltaTime, window);
 			player.draw(window);
 			window.display();
 		}

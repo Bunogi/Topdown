@@ -22,6 +22,7 @@ namespace Game {
 	sf::Sprite cloudSprite;
 	sf::Vector2u windowSize;
 
+	//TODO: Store pointers to these vectors instead, to run faster
 	std::list<std::vector<Enemy::Enemy>> enemies;
 	std::stack<std::vector<Enemy::Enemy>> enemiesToAdd;
 	std::stack<float> enemyWaveTimes;
@@ -60,11 +61,11 @@ namespace Game {
 			cloudCount = info["clouds"];
 			genClouds();
 			scrollSpeed = info["scrollSpeed"];
+			scroll = 0.0f;
 
 			enemies.clear();
 			/* TODO: Possibly refactor */
 			for (auto it = waves.end() - 1; it != waves.begin(); it--) {
-				std::cerr << "Iteration: " << it - waves.begin() << "\n";
 				std::vector<Enemy::Enemy> addEnems;
 				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
 				Enemy::EnemyType type;
@@ -80,9 +81,26 @@ namespace Game {
 		} CATCH_SETTING_ERRORS(level);
 	}
 
-	void update(float dt) {
+	void update(float dt, sf::RenderWindow& window) {
 		totalTime += dt;
-		
+		scroll += scrollSpeed * dt;
+
+		//Insert new enemies
+		if (enemyWaveTimes.size() > 0) {
+			if (enemyWaveTimes.top() >= scroll) { //Probably won't ever be equal to scroll. It's just too unlikely
+				enemies.emplace_back(enemiesToAdd.top());
+				enemiesToAdd.pop();
+				enemyWaveTimes.pop();
+			}
+		}
+
+		//Update enemies
+		for (auto &i : enemies) {
+			for (auto &j : i) {
+				j.update(dt);
+				j.draw(window);
+			}
+		}
 	}
 
 	void genClouds() {
