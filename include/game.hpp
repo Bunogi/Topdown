@@ -23,6 +23,9 @@ namespace Game {
 	extern void drawClouds(sf::RenderWindow& window, float dt);
 	extern unsigned cloudCount;
 
+	//Load level
+	extern void loadLevel(std::string level);
+
 	extern sf::Vector2u windowSize;
 
 	extern float totalTime;

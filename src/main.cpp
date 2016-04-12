@@ -4,6 +4,7 @@
 
 #include "entity/player.hpp"
 #include "game.hpp"
+#include "resource.hpp"
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "topdown", sf::Style::Titlebar);
@@ -16,6 +17,7 @@ int main() {
 		Game::init(window.getSize());
 		Game::cloudCount = 5;
 		Game::genClouds();
+		Game::loadLevel(getResourcePath() + "/levels/one.cfg");
 		Player player;
 
 		while (window.isOpen()) {

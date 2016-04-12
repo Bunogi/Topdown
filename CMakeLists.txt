@@ -6,7 +6,7 @@ pkg_search_module(SFML REQUIRED sfml-graphics)
 pkg_search_module(SFML REQUIRED sfml-system)
 pkg_search_module(SFML REQUIRED sfml-window)
 
-pkg_searcH_module(CONFIG REQUIRED libconfig++)
+pkg_search_module(CONFIG REQUIRED libconfig++)
 
 include_directories(include)
 

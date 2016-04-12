@@ -1,6 +1,14 @@
 #include <iostream>
+#include <vector>
+#include <stack>
+#include <list>
+
+#include <libconfig.h++>
+
 #include "game.hpp"
+#include "entity/enemy.hpp"
 #include "resource.hpp"
+#include "configException.hpp"
 
 namespace Game {
 	//RNG for cloud positions
@@ -8,17 +16,23 @@ namespace Game {
 	std::mt19937 mt(dev());
 	std::uniform_real_distribution<float> xDist;
 	std::uniform_real_distribution<float> yDist; //Only used at the start
-	std::uniform_real_distribution<float> speedDist;
 
 	std::vector<Cloud> clouds;
 	sf::Texture cloudTexture;
 	sf::Sprite cloudSprite;
 	sf::Vector2u windowSize;
 
+	std::list<std::vector<Enemy::Enemy>> enemies;
+	std::stack<std::vector<Enemy::Enemy>> enemiesToAdd;
+	std::stack<float> enemyWaveTimes;
+
 	unsigned cloudCount = 0;
 	const float cloudSpeed = 60.f;
 
 	float totalTime = 0.f;
+
+	float scrollSpeed = 0.0f;
+	float scroll = 0.0f;
 
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
@@ -35,8 +49,40 @@ namespace Game {
 		}
 	}
 
+	void loadLevel(std::string level) {
+		using namespace libconfig;
+		try {
+			Config config;
+			config.readFile(level.c_str());
+			const Setting& waves = config.getRoot()["waves"];
+			const Setting& info = config.getRoot()["level"];
+
+			cloudCount = info["clouds"];
+			genClouds();
+			scrollSpeed = info["scrollSpeed"];
+
+			enemies.clear();
+			/* TODO: Possibly refactor */
+			for (auto it = waves.end() - 1; it != waves.begin(); it--) {
+				std::cerr << "Iteration: " << it - waves.begin() << "\n";
+				std::vector<Enemy::Enemy> addEnems;
+				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
+				Enemy::EnemyType type;
+				int count = 0;
+				for (auto &i : (*it)["wave"]) {
+					int enemy = (*it)["wave"][count];
+					addEnems.push_back(Enemy::Enemy(static_cast<Enemy::EnemyType>(enemy), count, gridSpc));
+					count++;
+				}
+				enemyWaveTimes.push((*it)["pos"]);
+				enemiesToAdd.push(addEnems);
+			}
+		} CATCH_SETTING_ERRORS(level);
+	}
+
 	void update(float dt) {
 		totalTime += dt;
+		
 	}
 
 	void genClouds() {

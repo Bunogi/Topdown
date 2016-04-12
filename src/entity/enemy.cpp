@@ -10,26 +10,26 @@
 
 namespace Enemy {
 	using namespace libconfig;
-	const std::map<EnemyType, const char*> enemyNames {
+	const std::map<EnemyType, std::string> enemyNames {
 		{ EnemyType::Goon, "Goon" }
 	};
 
-	Enemy::Enemy(EnemyType setType, unsigned gridPos) : type(setType) {
-		std::string settingsFile = getResourcePath() + "entities/enemies/" + enemyNames.at(type);
+	Enemy::Enemy(EnemyType setType, unsigned gridPos, float gridSpc) : type(setType) {
+		std::string settingsFile = getResourcePath() + "/entities/enemies/" + enemyNames.at(type) + ".cfg";
 		rect = sf::RectangleShape();
 		try {
 			Config config;
 			config.readFile(settingsFile.c_str());
 			const Setting& setting = config.getRoot()["entity"];
 			int xSize, ySize;
-			xSize = setting["size"]["x"];
-			ySize = setting["size"]["y"];
+			xSize = setting["size"]["w"];
+			ySize = setting["size"]["h"];
 			rect.setSize(sf::Vector2f(xSize, ySize));
 			health = setting["health"];
 			speed = setting["movespeed"];
 			gridPosition = gridPos;
-			gridSpace = Game::windowSize.x / static_cast<float>(gridPosition);
-		} CATCH_SETTING_ERRORS;
+			gridSpace = gridSpc;
+		} CATCH_SETTING_ERRORS(settingsFile);
 	}
 
 	void Enemy::draw(sf::RenderWindow& window) {

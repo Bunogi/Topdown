@@ -26,7 +26,7 @@ Player::Player() {
 		health = setting["health"];
 		speed = setting["movespeed"];
 		rect.setFillColor(sf::Color::Green);
-	} CATCH_SETTING_ERRORS;
+	} CATCH_SETTING_ERRORS(settingsFile);
 
 	/*if (entTexture.loadFromFile(getResourcePath() + "/player.png")) {
 		entTexture.setSmooth(false);
