@@ -32,8 +32,10 @@ namespace Game {
 
 	float totalTime = 0.f;
 
-	float scrollSpeed = 0.0f;
-	float scroll = 0.0f;
+	float scrollSpeed = 0.f;
+	float scroll = 0.f;
+
+	float cloudTexH = 0.f;
 
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
@@ -47,6 +49,7 @@ namespace Game {
 		else {
 			cloudSprite = sf::Sprite(cloudTexture);
 			cloudSprite.setColor(sf::Color(0xFF, 0xFF, 0xFF, 0x88));
+			cloudTexH = cloudTexture.getSize().x;
 		}
 	}
 
@@ -115,7 +118,7 @@ namespace Game {
 		for (auto &i : clouds) {
 			i.y += cloudSpeed * dt;
 			if (i.y > windowSize.y) {
-				i.y = 0;
+				i.y = - cloudTexH;
 				i.x = xDist(mt);
 			}
 			cloudSprite.setPosition(i.x, i.y);
