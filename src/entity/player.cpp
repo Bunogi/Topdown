@@ -27,27 +27,27 @@ Player::Player() {
 		speed = setting["movespeed"];
 		flickerSpeed = setting["flickerSpeed"];
 		damageInvulnResetTime = setting["invulnTime"];
-		rect.setFillColor(sf::Color::Green);
+		rect.setFillColor(sf::Color::White);
 	} CATCH_SETTING_ERRORS(settingsFile);
 
-	/*if (entTexture.loadFromFile(getResourcePath() + "/player.png")) {
+	if (entTexture.loadFromFile(getResourcePath() + "/images/player.png")) {
 		entTexture.setSmooth(false);
 		entTexture.setRepeated(false);
 		rect.setTexture(&entTexture);
-	} */
+	}
 }
 
 void Player::draw(sf::RenderWindow& window) {
 	if (damageInvulnTime > 0.f) {
 		if (flickerTime >= 0.f)
-			rect.setFillColor(sf::Color(0, 0xFF, 0, 0x88));
+			rect.setFillColor(sf::Color(0xFF, 0xFF, 0xFF, 0x88));
 		else {
-			rect.setFillColor(sf::Color::Green);
+			rect.setFillColor(sf::Color::White);
 			flickerTime = flickerSpeed;
 		}
 	}
 	else
-		rect.setFillColor(sf::Color::Green);
+		rect.setFillColor(sf::Color::White);
 	window.draw(rect);
 	std::cerr << "\rHealth: " << health;
 }
