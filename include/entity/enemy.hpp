@@ -23,5 +23,6 @@ namespace Enemy {
 		const EnemyType type;
 		unsigned gridPosition;
 		float gridSpace;
+		bool shouldDelete();
 	};
 };

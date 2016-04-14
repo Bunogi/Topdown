@@ -23,9 +23,8 @@ namespace Game {
 	sf::Sprite cloudSprite;
 	sf::Vector2u windowSize;
 
-	//TODO: Store pointers to these vectors instead, to run faster
-	std::list<std::vector<Enemy::Enemy>> enemies;
-	std::stack<std::vector<Enemy::Enemy>> enemiesToAdd;
+	std::list<std::list<Enemy::Enemy>> enemies;
+	std::stack<std::list<Enemy::Enemy>> enemiesToAdd;
 	std::stack<float> enemyWaveTimes;
 
 	unsigned cloudCount = 0;
@@ -77,7 +76,7 @@ namespace Game {
 			enemies.clear();
 			/* TODO: Possibly refactor */
 			for (auto it = waves.end() - 1; it != waves.begin() - 1; it--) {
-				std::vector<Enemy::Enemy> addEnems;
+				std::list<Enemy::Enemy> addEnems;
 				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
 				Enemy::EnemyType type;
 				int count = 0;
@@ -106,12 +105,23 @@ namespace Game {
 			}
 		}
 
+		int numberThing = 0;
 		//Update enemies
-		for (auto &i : enemies) {
-			for (auto &j : i) {
-				j.update(dt, *player);
-				j.draw(window);
+		for (auto it = enemies.begin(); it != enemies.end(); ) {
+			if (it->empty()) {
+				it = enemies.erase(it);
+				continue;
 			}
+			for (auto it2 = it->begin(); it2 != it->end(); ) {
+				if (it2->shouldDelete()) {
+					it2 = it->erase(it2);
+					continue;
+				}
+				it2->update(dt, *player);
+				it2->draw(window);
+				it2++;
+			}
+			it++;
 		}
 
 		player->update(dt);

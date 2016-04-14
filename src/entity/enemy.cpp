@@ -62,4 +62,8 @@ namespace Enemy {
 			player.doDamage(dt);
 		}
 	}
+
+	bool Enemy::shouldDelete() {
+		return y > Game::windowSize.y;
+	}
 }
