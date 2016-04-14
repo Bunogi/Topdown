@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "entity/player.hpp"
 #include "game.hpp"
 #include "resource.hpp"
 
@@ -18,7 +17,6 @@ int main() {
 		Game::cloudCount = 5;
 		Game::genClouds();
 		Game::loadLevel(getResourcePath() + "/levels/one.cfg");
-		Player player;
 
 		while (window.isOpen()) {
 			while (window.pollEvent(event)) {
@@ -27,12 +25,10 @@ int main() {
 			}
 
 			float deltaTime = deltaClock.restart().asSeconds();
-			player.update(deltaTime);
 
 			window.clear(sf::Color(0x1C, 0x6B, 0xA0));
 			Game::drawClouds(window, deltaTime);
 			Game::update(deltaTime, window);
-			player.draw(window);
 			window.display();
 		}
 	} catch(int i) { //A fatal, unrecoverable error has occured

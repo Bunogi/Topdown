@@ -39,17 +39,27 @@ namespace Enemy {
 		window.draw(rect);
 	}
 
-	void Enemy::update(float dt) {
+	/* Well, this is one way to "delete" virtual functions */
+	void Enemy::update(float) {
+		std::cerr << "\033[1;31mError\033[0m: Enemy::update(float) should never be called!\n";
+		throw 1;
+	}
+
+	void Enemy::update(float dt, Player& player) {
 		switch (type) {
 			case EnemyType::Goon:
 				/* Move around to +- half of gridSpace on the x-axis */
-				x = gridPosition * gridSpace + (gridSpace / 2.f) * std::sin(Game::totalTime);
+				/* TODO: Something is off here, fix it */
+				x = (gridSpace / 2.f) + gridPosition * gridSpace + (gridSpace / 2.f) * std::sin(Game::totalTime);
 				y += Game::scrollSpeed * dt;
 				break;
-			default:  //Probably just haven't implemented this yet
+			default:  //Probably just haven't implemented this enemy yet
 				std::cerr << "\033[1;31mError\033[0m: No defined AI for enemy " << enemyNames.at(type) << "\nDid you remember to implement it?\n";
 				throw 1;
 		}
 		rect.setPosition(x, y);
+		if (player.getRect().getGlobalBounds().intersects(rect.getGlobalBounds())) {
+			player.doDamage(dt);
+		}
 	}
-};
+}

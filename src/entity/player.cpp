@@ -25,6 +25,8 @@ Player::Player() {
 		rect.setSize(sf::Vector2f(xSize, ySize));
 		health = setting["health"];
 		speed = setting["movespeed"];
+		flickerSpeed = setting["flickerSpeed"];
+		damageInvulnResetTime = setting["invulnTime"];
 		rect.setFillColor(sf::Color::Green);
 	} CATCH_SETTING_ERRORS(settingsFile);
 
@@ -36,7 +38,18 @@ Player::Player() {
 }
 
 void Player::draw(sf::RenderWindow& window) {
+	if (damageInvulnTime > 0.f) {
+		if (flickerTime >= 0.f)
+			rect.setFillColor(sf::Color(0, 0xFF, 0, 0x88));
+		else {
+			rect.setFillColor(sf::Color::Green);
+			flickerTime = flickerSpeed;
+		}
+	}
+	else
+		rect.setFillColor(sf::Color::Green);
 	window.draw(rect);
+	std::cerr << "\rHealth: " << health;
 }
 
 void Player::update(float dt) {
@@ -50,4 +63,20 @@ void Player::update(float dt) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		y += deltaPos;
 	rect.setPosition(x, y);
+
+	if (damageInvulnTime > 0.f) {
+		damageInvulnTime -= dt;
+		flickerTime -= dt;
+	}
+}
+
+const sf::RectangleShape& Player::getRect() {
+	return rect;
+}
+
+void Player::doDamage(float dt) {
+	if (damageInvulnTime <= 0.f) {
+		damageInvulnTime = damageInvulnResetTime;
+		health--;
+	}
 }

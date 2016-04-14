@@ -7,6 +7,7 @@
 
 #include "game.hpp"
 #include "entity/enemy.hpp"
+#include "entity/player.hpp"
 #include "resource.hpp"
 #include "configException.hpp"
 
@@ -37,6 +38,8 @@ namespace Game {
 
 	float cloudTexH = 0.f;
 
+	Player *player = nullptr;
+
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
 		xDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f); //Keep clouds off the edges of the screen
@@ -54,6 +57,11 @@ namespace Game {
 	}
 
 	void loadLevel(std::string level) {
+		if (player != nullptr) {
+			delete player;
+		}
+		player = new Player;
+
 		using namespace libconfig;
 		try {
 			Config config;
@@ -101,10 +109,13 @@ namespace Game {
 		//Update enemies
 		for (auto &i : enemies) {
 			for (auto &j : i) {
-				j.update(dt);
+				j.update(dt, *player);
 				j.draw(window);
 			}
 		}
+
+		player->update(dt);
+		player->draw(window);
 	}
 
 	void genClouds() {
