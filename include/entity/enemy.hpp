@@ -25,5 +25,6 @@ namespace Enemy {
 		unsigned gridPosition;
 		float gridSpace;
 		bool shouldDelete();
+		void doDamage();
 	};
 };

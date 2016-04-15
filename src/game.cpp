@@ -127,7 +127,7 @@ namespace Game {
 				for (auto it3 = playerProjectiles.begin(); it3 != playerProjectiles.end(); ){
 					//Check collision with the enemy we're currently updating
 					if (it3->getRect().getGlobalBounds().intersects(it2->getRect().getGlobalBounds())) {
-						//it2->doDamage(); TODO: implement this function
+						it2->doDamage();
 						it3 = playerProjectiles.erase(it3);
 						continue;
 					}

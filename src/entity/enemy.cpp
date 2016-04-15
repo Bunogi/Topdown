@@ -66,4 +66,8 @@ namespace Enemy {
 	bool Enemy::shouldDelete() {
 		return y > Game::windowSize.y + (ySize / 2.f) or health <= 0;
 	}
+
+	void Enemy::doDamage() {
+		health--;
+	}
 }

@@ -82,10 +82,18 @@ void Player::update(float dt) {
 		y -= deltaPos;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		y += deltaPos;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		Game::playerShoot();
 
 	rect.setPosition(x, y);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+		if (shootBuffer <= 0.f) {
+			Game::playerShoot();
+			shootBuffer = fireRate;
+		}
+	}
+
+	if (shootBuffer > 0.f)
+		shootBuffer -= dt;
 
 	if (damageInvulnTime > 0.f) {
 		damageInvulnTime -= dt;
