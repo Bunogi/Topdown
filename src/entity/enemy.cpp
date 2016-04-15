@@ -21,7 +21,6 @@ namespace Enemy {
 			Config config;
 			config.readFile(settingsFile.c_str());
 			const Setting& setting = config.getRoot()["entity"];
-			int xSize, ySize;
 			xSize = setting["size"]["w"];
 			ySize = setting["size"]["h"];
 			rect.setSize(sf::Vector2f(xSize, ySize));
@@ -65,6 +64,6 @@ namespace Enemy {
 	}
 
 	bool Enemy::shouldDelete() {
-		return y > Game::windowSize.y;
+		return y > Game::windowSize.y + (ySize / 2.f);
 	}
 }

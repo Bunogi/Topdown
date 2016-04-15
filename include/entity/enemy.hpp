@@ -15,6 +15,7 @@ namespace Enemy {
 	extern const std::map<EnemyType, std::string> enemyNames;
 
 	class Enemy : public Entity {
+		int xSize, ySize;
 	public:
 		void draw(sf::RenderWindow& window);
 		void update(float);
