@@ -30,4 +30,6 @@ namespace Game {
 
 	extern float scrollSpeed;
 	extern float totalTime;
+
+	extern void playerShoot();
 };

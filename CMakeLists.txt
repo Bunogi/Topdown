@@ -22,6 +22,7 @@ add_executable(
 	src/resource.cpp
 	src/entity/player.cpp
 	src/entity/enemy.cpp
+	src/entity/projectile.cpp
 )
 
 target_link_libraries(topdown ${SFML_LIBRARIES} ${CONFIG_LIBRARIES})

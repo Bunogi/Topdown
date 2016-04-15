@@ -8,6 +8,7 @@
 #include "game.hpp"
 #include "entity/enemy.hpp"
 #include "entity/player.hpp"
+#include "entity/projectile.hpp"
 #include "resource.hpp"
 #include "configException.hpp"
 
@@ -26,6 +27,7 @@ namespace Game {
 	std::list<std::list<Enemy::Enemy>> enemies;
 	std::stack<std::list<Enemy::Enemy>> enemiesToAdd;
 	std::stack<float> enemyWaveTimes;
+	std::vector<Projectile> playerProjectiles;
 
 	unsigned cloudCount = 0;
 	const float cloudSpeed = 60.f;
@@ -55,11 +57,17 @@ namespace Game {
 		}
 	}
 
+	void playerShoot() {
+		playerProjectiles.emplace_back(Projectile(player->x, player->y - (player->getRect().getSize().y / 2.f), player->projectileSpeed));
+	}
+
 	void loadLevel(std::string level) {
 		if (player != nullptr) {
 			delete player;
 		}
 		player = new Player;
+
+		playerProjectiles.clear();
 
 		using namespace libconfig;
 		try {
@@ -105,7 +113,6 @@ namespace Game {
 			}
 		}
 
-		int numberThing = 0;
 		//Update enemies
 		for (auto it = enemies.begin(); it != enemies.end(); ) {
 			if (it->empty()) {
@@ -114,13 +121,33 @@ namespace Game {
 			}
 			for (auto it2 = it->begin(); it2 != it->end(); ) {
 				if (it2->shouldDelete()) {
-					it2 = it->erase(it2);
+					it2 = it->erase(it2); //Enemy is dead or off-screen
 					continue;
+				}
+				for (auto it3 = playerProjectiles.begin(); it3 != playerProjectiles.end(); ){
+					//Check collision with the enemy we're currently updating
+					if (it3->getRect().getGlobalBounds().intersects(it2->getRect().getGlobalBounds())) {
+						//it2->doDamage(); TODO: implement this function
+						it3 = playerProjectiles.erase(it3);
+						continue;
+					}
+					it3++;
 				}
 				it2->update(dt, *player);
 				it2->draw(window);
 				it2++;
 			}
+			it++;
+		}
+
+		//Remove unnecesarry projectiles, update all projectiles
+		for (auto it = playerProjectiles.begin(); it != playerProjectiles.end(); ) {
+			if (it->shouldRemove()) {
+				it = playerProjectiles.erase(it);
+				continue;
+			}
+			it->update(dt);
+			it->draw(window);
 			it++;
 		}
 

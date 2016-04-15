@@ -27,14 +27,16 @@ Player::Player() {
 		speed = setting["movespeed"];
 		flickerSpeed = setting["flickerSpeed"];
 		damageInvulnResetTime = setting["invulnTime"];
-		rect.setFillColor(sf::Color::White);
 		heartDistance = setting["heartSpace"];
+		fireRate = setting["firerate"];
+		projectileSpeed = setting["projectileSpeed"];
+		rect.setFillColor(sf::Color::White);
 	} CATCH_SETTING_ERRORS(settingsFile);
 
-	if (entTexture.loadFromFile(getResourcePath() + "/images/player.png")) {
-		entTexture.setSmooth(false);
-		entTexture.setRepeated(false);
-		rect.setTexture(&entTexture);
+	if (texture.loadFromFile(getResourcePath() + "/images/player.png")) {
+		texture.setSmooth(false);
+		texture.setRepeated(false);
+		rect.setTexture(&texture);
 	}
 
 	if (heartTexture.loadFromFile(getResourcePath() + "/images/heart.png")) {
@@ -48,6 +50,7 @@ Player::Player() {
 	}
 
 	isFlickering = false;
+	shootBuffer = 0.0f;
 }
 
 void Player::draw(sf::RenderWindow& window) {
@@ -60,11 +63,13 @@ void Player::draw(sf::RenderWindow& window) {
 	}
 	else
 		rect.setFillColor(sf::Color::White);
-	window.draw(rect);
+
 	for (int i = 0; i < health; i++) {
 		heartRect.setPosition(i * heartWidth + heartDistance, heartYPos);
 		window.draw(heartRect);
 	}
+
+	window.draw(rect);
 }
 
 void Player::update(float dt) {
@@ -77,6 +82,9 @@ void Player::update(float dt) {
 		y -= deltaPos;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		y += deltaPos;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		Game::playerShoot();
+
 	rect.setPosition(x, y);
 
 	if (damageInvulnTime > 0.f) {
@@ -87,10 +95,6 @@ void Player::update(float dt) {
 			flickerTime = flickerSpeed;
 		}
 	}
-}
-
-const sf::RectangleShape& Player::getRect() {
-	return rect;
 }
 
 void Player::doDamage(float dt) {

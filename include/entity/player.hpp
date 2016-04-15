@@ -9,15 +9,21 @@ class Player : public Entity {
 	float flickerTime; //Current flicker time
 	bool isFlickering; //Are we currently transparent?
 
+	float shootBuffer;
+	float fireRate;
+
 	float heartDistance;
 	float heartWidth;
 	float heartYPos;
 	sf::Texture heartTexture;
 	sf::RectangleShape heartRect;
+
+	sf::Texture texture;
 public:
+	float projectileSpeed;
+
 	Player();
 	void draw(sf::RenderWindow& window);
 	void update(float dt);
 	void doDamage(float dt);
-	const sf::RectangleShape& getRect();
 };
