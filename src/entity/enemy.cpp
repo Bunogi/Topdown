@@ -28,6 +28,7 @@ namespace Enemy {
 			rect.setFillColor(sf::Color::Red);
 			rect.setOutlineThickness(2);
 			rect.setOutlineColor(sf::Color::Blue);
+			rect.setOrigin(xSize / 2.f, ySize / 2.f);
 			health = setting["health"];
 			speed = setting["movespeed"];
 			gridPosition = gridPos;

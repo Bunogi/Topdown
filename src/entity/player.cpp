@@ -28,6 +28,7 @@ Player::Player() {
 		flickerSpeed = setting["flickerSpeed"];
 		damageInvulnResetTime = setting["invulnTime"];
 		rect.setFillColor(sf::Color::White);
+		heartDistance = setting["heartSpace"];
 	} CATCH_SETTING_ERRORS(settingsFile);
 
 	if (entTexture.loadFromFile(getResourcePath() + "/images/player.png")) {
@@ -35,21 +36,35 @@ Player::Player() {
 		entTexture.setRepeated(false);
 		rect.setTexture(&entTexture);
 	}
+
+	if (heartTexture.loadFromFile(getResourcePath() + "/images/heart.png")) {
+		heartTexture.setSmooth(false);
+		heartTexture.setRepeated(false);
+		heartRect = sf::RectangleShape(sf::Vector2f(36.f, 36.f));
+		heartRect.setTexture(&heartTexture);
+		heartWidth = heartRect.getSize().x;
+		heartYPos = Game::windowSize.y - heartWidth; //The heart texture is always square
+		heartRect.setPosition(0.f, heartYPos);
+	}
+
+	isFlickering = false;
 }
 
 void Player::draw(sf::RenderWindow& window) {
 	if (damageInvulnTime > 0.f) {
-		if (flickerTime >= 0.f)
+		if (isFlickering)
 			rect.setFillColor(sf::Color(0xFF, 0xFF, 0xFF, 0x88));
 		else {
 			rect.setFillColor(sf::Color::White);
-			flickerTime = flickerSpeed;
 		}
 	}
 	else
 		rect.setFillColor(sf::Color::White);
 	window.draw(rect);
-	std::cerr << "\rHealth: " << health;
+	for (int i = 0; i < health; i++) {
+		heartRect.setPosition(i * heartWidth + heartDistance, heartYPos);
+		window.draw(heartRect);
+	}
 }
 
 void Player::update(float dt) {
@@ -67,6 +82,10 @@ void Player::update(float dt) {
 	if (damageInvulnTime > 0.f) {
 		damageInvulnTime -= dt;
 		flickerTime -= dt;
+		if (flickerTime <= 0.f) {
+			isFlickering = not isFlickering;
+			flickerTime = flickerSpeed;
+		}
 	}
 }
 

@@ -7,6 +7,13 @@ class Player : public Entity {
 	float damageInvulnResetTime; //Time to reset damageInvulnTime to when damage is taken
 	float flickerSpeed; //Speed per flicker
 	float flickerTime; //Current flicker time
+	bool isFlickering; //Are we current transparent?
+
+	float heartDistance;
+	float heartWidth;
+	float heartYPos;
+	sf::Texture heartTexture;
+	sf::RectangleShape heartRect;
 public:
 	Player();
 	void draw(sf::RenderWindow& window);
