@@ -24,8 +24,7 @@ namespace Game {
 	sf::Sprite cloudSprite;
 	sf::Vector2u windowSize;
 
-	std::list<std::list<Enemy::Enemy>> enemies;
-	std::stack<std::list<Enemy::Enemy>> enemiesToAdd;
+	std::list<Enemy::Enemy> enemies;
 	std::stack<float> enemyWaveTimes;
 	std::vector<Projectile> playerProjectiles;
 
@@ -63,9 +62,8 @@ namespace Game {
 	}
 
 	void loadLevel(std::string level) {
-		if (player != nullptr) {
+		if (player != nullptr)
 			delete player;
-		}
 		player = new Player;
 
 		playerProjectiles.clear();
@@ -94,7 +92,6 @@ namespace Game {
 					count++;
 				}
 				enemyWaveTimes.push((*it)["pos"]);
-				enemiesToAdd.push(addEnems);
 			}
 		} CATCH_SETTING_ERRORS(level);
 	}
@@ -107,36 +104,28 @@ namespace Game {
 		//Insert new enemies
 		if (enemyWaveTimes.size() > 0) {
 			if (enemyWaveTimes.top() <= scroll) { //Probably won't ever be equal to scroll. It's just too unlikely
-				enemies.emplace_back(enemiesToAdd.top());
-				enemiesToAdd.pop();
+				generateWave();
 				enemyWaveTimes.pop();
 			}
 		}
 
 		//Update enemies
 		for (auto it = enemies.begin(); it != enemies.end(); ) {
-			if (it->empty()) {
-				it = enemies.erase(it);
+			if (it->shouldDelete()) {
+				it = enemies.erase(it); //Enemy is dead or off-screen
 				continue;
 			}
-			for (auto it2 = it->begin(); it2 != it->end(); ) {
-				if (it2->shouldDelete()) {
-					it2 = it->erase(it2); //Enemy is dead or off-screen
+			for (auto it2 = playerProjectiles.begin(); it2 != playerProjectiles.end(); ){
+				//Check collision with the enemy we're currently updating
+				if (it2->getRect().getGlobalBounds().intersects(it->getRect().getGlobalBounds())) {
+					it->doDamage();
+					it2 = playerProjectiles.erase(it2);
 					continue;
 				}
-				for (auto it3 = playerProjectiles.begin(); it3 != playerProjectiles.end(); ){
-					//Check collision with the enemy we're currently updating
-					if (it3->getRect().getGlobalBounds().intersects(it2->getRect().getGlobalBounds())) {
-						it2->doDamage();
-						it3 = playerProjectiles.erase(it3);
-						continue;
-					}
-					it3++;
-				}
-				it2->update(dt, *player);
-				it2->draw(window);
 				it2++;
 			}
+			it->update(dt, *player);
+			it->draw(window);
 			it++;
 		}
 
