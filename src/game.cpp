@@ -55,6 +55,7 @@ namespace Game {
 			cloudSprite.setColor(sf::Color(0xFF, 0xFF, 0xFF, 0x88));
 			cloudTexH = cloudTexture.getSize().x;
 		}
+		Enemy::load();
 	}
 
 	void playerShoot() {
@@ -82,8 +83,7 @@ namespace Game {
 			scroll = 0.0f;
 
 			enemies.clear();
-			/* TODO: Possibly refactor */
-			for (auto it = waves.end() - 1; it != waves.begin() - 1; it--) {
+			for (auto it = waves.end() - 1; it != waves.begin() - 1; it--) { //rbegin() and rend() don't exist in the libconfig iterators
 				std::list<Enemy::Enemy> addEnems;
 				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
 				Enemy::EnemyType type;

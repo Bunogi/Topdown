@@ -23,6 +23,7 @@ Player::Player() {
 		x = Game::windowSize.x / 2.f + xSize / 2.f;
 		y = Game::windowSize.y / 2.f + Game::windowSize.y / 3.f;
 		rect.setSize(sf::Vector2f(xSize, ySize));
+		rect.setOrigin(xSize / 2.f, ySize / 2.f);
 		health = setting["health"];
 		speed = setting["movespeed"];
 		flickerSpeed = setting["flickerSpeed"];

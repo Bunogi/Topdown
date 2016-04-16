@@ -11,9 +11,24 @@
 namespace Enemy {
 	using namespace libconfig;
 	const std::map<EnemyType, std::string> enemyNames {
-		{ EnemyType::Goon, "Goon" }
+		{ EnemyType::Goon, "Goon" },
+		{ EnemyType::Diver, "Diver" }
 	};
 
+	std::map<EnemyType, sf::Texture> enemyTextures;
+
+	void load() {
+		for (auto it = enemyNames.begin(); it != enemyNames.end(); it++) {
+			sf::Texture& tex = enemyTextures[it->first];
+			std::string textureFile = getResourcePath() + "/images/" + enemyNames.at(it->first) + ".png";
+			if (not tex.loadFromFile(textureFile)) {
+				std::cerr << "\033[1;31mError\033[0m: Failed to load texture: " << textureFile << "\n";
+				throw 1;
+			}
+		}
+	}
+
+	/* TODO: Not require reading the settings file every time we create a new enemy */
 	Enemy::Enemy(EnemyType setType, unsigned gridPos, float gridSpc) : type(setType) {
 		std::string settingsFile = getResourcePath() + "/entities/enemies/" + enemyNames.at(type) + ".cfg";
 		rect = sf::RectangleShape();
@@ -24,15 +39,16 @@ namespace Enemy {
 			xSize = setting["size"]["w"];
 			ySize = setting["size"]["h"];
 			rect.setSize(sf::Vector2f(xSize, ySize));
-			rect.setFillColor(sf::Color::Red);
-			rect.setOutlineThickness(2);
-			rect.setOutlineColor(sf::Color::Blue);
 			rect.setOrigin(xSize / 2.f, ySize / 2.f);
+			rect.setTexture(&enemyTextures[type]);
 			health = setting["health"];
 			speed = setting["movespeed"];
 			gridPosition = gridPos;
 			gridSpace = gridSpc;
+			x = (gridSpace / 2.f) + gridPosition * gridSpace;
+			y = 0;
 		} CATCH_SETTING_ERRORS(settingsFile);
+		xOffset = yOffset = 0.f;
 	}
 
 	void Enemy::draw(sf::RenderWindow& window) {
@@ -46,18 +62,21 @@ namespace Enemy {
 	}
 
 	void Enemy::update(float dt, Player& player) {
+		y += Game::scrollSpeed * dt;
 		switch (type) {
 			case EnemyType::Goon:
 				/* Move around to +- half of gridSpace on the x-axis */
 				/* TODO: Something is off here, fix it */
-				x = (gridSpace / 2.f) + gridPosition * gridSpace + (gridSpace / 2.f) * std::sin(Game::totalTime);
-				y += Game::scrollSpeed * dt;
+				xOffset = (gridSpace / 2.f) * std::sin(Game::totalTime);
+				break;
+			case EnemyType::Diver:
+				yOffset = (gridSpace / 2.f) * std::abs(std::sin(Game::totalTime));
 				break;
 			default:  //Probably just haven't implemented this enemy yet
-				std::cerr << "\033[1;31mError\033[0m: No defined AI for enemy " << enemyNames.at(type) << "\nDid you remember to implement it?\n";
+				std::cerr << "\033[1;31mError\033[0m: No defined AI for enemy: " << enemyNames.at(type) << ".\nDid you remember to implement it?\n";
 				throw 1;
 		}
-		rect.setPosition(x, y);
+		rect.setPosition(x + xOffset, y + yOffset);
 		if (player.getRect().getGlobalBounds().intersects(rect.getGlobalBounds())) {
 			player.doDamage(dt);
 		}
