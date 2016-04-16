@@ -10,7 +10,8 @@
 namespace Enemy {
 	enum class EnemyType : int {
 		Goon = 1,
-		Diver = 2
+		Diver = 2,
+		COUNT
 	};
 
 	extern const std::map<EnemyType, std::string> enemyNames;

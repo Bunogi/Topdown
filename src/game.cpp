@@ -18,6 +18,7 @@ namespace Game {
 	std::mt19937 mt(dev());
 	std::uniform_real_distribution<float> xDist;
 	std::uniform_real_distribution<float> yDist; //Only used at the start
+	std::uniform_int_distribution<> typeDist;
 
 	std::vector<Cloud> clouds;
 	sf::Texture cloudTexture;
@@ -38,12 +39,16 @@ namespace Game {
 
 	float cloudTexH = 0.f;
 
+	int waveSize = 0;
+	float gridSpace = 0.f;
+
 	Player *player = nullptr;
 
 	void init(const sf::Vector2u winSize) {
 		windowSize = winSize;
 		xDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f); //Keep clouds off the edges of the screen
 		yDist = std::uniform_real_distribution<float>(20.f, windowSize.x - 20.f);
+		typeDist = std::uniform_int_distribution<>(1, static_cast<int>(Enemy::EnemyType::COUNT) - 1);
 		std::string filePath = getResourcePath() + "/images/cloud.png";
 		if (not cloudTexture.loadFromFile(filePath)) {
 			std::cerr << "Error: Failed to open file: " << filePath << "\n";
@@ -72,30 +77,29 @@ namespace Game {
 		try {
 			Config config;
 			config.readFile(level.c_str());
-			const Setting& waves = config.getRoot()["waves"];
 			const Setting& info = config.getRoot()["level"];
+			const Setting& waves = info["waves"];
 
 			cloudCount = info["clouds"];
 			genClouds();
 			scrollSpeed = info["scrollSpeed"];
 			scroll = 0.0f;
+			waveSize = info["waveSize"];
+
+			gridSpace = windowSize.x / waveSize;
 
 			enemies.clear();
 			for (auto it = waves.end() - 1; it != waves.begin() - 1; it--) { //rbegin() and rend() don't exist in the libconfig iterators
-				std::list<Enemy::Enemy> addEnems;
-				float gridSpc = static_cast<float>(windowSize.x) / (*it)["wave"].getLength();
-				Enemy::EnemyType type;
-				int count = 0;
-				for (auto &i : (*it)["wave"]) {
-					int enemy = (*it)["wave"][count];
-					addEnems.push_back(Enemy::Enemy(static_cast<Enemy::EnemyType>(enemy), count, gridSpc));
-					count++;
-				}
-				enemyWaveTimes.push((*it)["pos"]);
+				enemyWaveTimes.push(*it);
 			}
 		} CATCH_SETTING_ERRORS(level);
 	}
 
+	void generateWave() {
+		/* TOOD: Add probabilities */
+		for (unsigned i = 0; i < waveSize; i++)
+			enemies.push_back(Enemy::Enemy(static_cast<Enemy::EnemyType>(typeDist(mt)), i, gridSpace));
+	}
 
 	void update(float dt, sf::RenderWindow& window) {
 		totalTime += dt;
@@ -103,7 +107,7 @@ namespace Game {
 
 		//Insert new enemies
 		if (enemyWaveTimes.size() > 0) {
-			if (enemyWaveTimes.top() <= scroll) { //Probably won't ever be equal to scroll. It's just too unlikely
+			if (scroll >= enemyWaveTimes.top())  { //Probably won't ever be equal to scroll. It's just too unlikely
 				generateWave();
 				enemyWaveTimes.pop();
 			}
